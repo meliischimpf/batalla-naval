@@ -1,0 +1,15 @@
+tablero 10x10
+ubican barcos
+max 5 barcos. pueden tener 1, 2, 3 o 4 lugares.
+
+objeto barco
+objeto tablero
+
+
+si tocamos y esta el barco en esa posición
+hundido
+tocado
+agua
+
+
+el juego termina cuando mataste a todos

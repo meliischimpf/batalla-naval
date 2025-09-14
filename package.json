@@ -1,0 +1,13 @@
+{
+  "name": "batalla-naval",
+  "version": "1.0.0",
+  "description": "Juego de Batalla Naval en JavaScript",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server . -p 3000 -c-1 --cors",
+    "start": "npx http-server . -p 3000 -c-1 --cors"
+  },
+  "keywords": ["battleship", "game", "javascript"],
+  "author": "",
+  "license": "MIT"
+}

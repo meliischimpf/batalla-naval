@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>🚢 Batalla Naval - Juego Épico</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
+</head>
+<body>
+    <div class="game-container">
+        <h1>⚓ BATALLA NAVAL ⚓</h1>
+        
+        <div class="control-panel">
+            <button id="boton-iniciar" class="boton-iniciar">🚀 Iniciar Misión</button>
+            <button id="boton-parar" class="boton-parar" style="display: none;">🛑 Abortar</button>
+            <button id="boton-reiniciar" class="boton-reiniciar" style="display: none;">🔄 Nueva Misi��n</button>
+        </div>
+
+        <div id="temporizador"></div>
+        
+        <div class="game-stats" id="game-stats" style="display: none;">
+            <div class="stat-item">
+                <span>🎯 Disparos</span>
+                <span class="stat-value" id="disparos-count">0</span>
+            </div>
+            <div class="stat-item">
+                <span>💥 Impactos</span>
+                <span class="stat-value" id="impactos-count">0</span>
+            </div>
+            <div class="stat-item">
+                <span>🚢 Barcos</span>
+                <span class="stat-value" id="barcos-count">5/5</span>
+            </div>
+        </div>
+
+        <div id="tablero"></div>
+    </div>
+
+    <div id="mensaje-final">
+        <p id="mensaje-final-texto"></p>
+        <button onclick="reiniciarJuego()">🔄 Jugar de Nuevo</button>
+    </div>
+
+    <!-- Efectos de sonido usando Web Audio API -->
+    <audio id="sound-hit" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGUdBzoS2e/NaSkLKV/L7tl/PwIAfgAA" type="audio/wav">
+    </audio>
+    
+    <audio id="sound-miss" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm1Ch3U" type="audio/wav">
+    </audio>
+
+    <script src="functions.js"></script>
+    <script src="class.js"></script>
+</body>
+</html>
