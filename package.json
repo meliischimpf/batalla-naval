@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx http-server . -p 3000 -c-1 --cors",
     "start": "npx http-server . -p 3000 -c-1 --cors",
-    "build": "esbuild src/*.js --bundle --minify --outdir=dist --target=es2020"
+    "build": "echo 'No se necesita build para este proyecto'"
   },
   "keywords": [
     "battleship",
