@@ -156,10 +156,19 @@ function recorrerCeldas(funcion) {
     }
 }
 
+// Claves "fila,columna" de las casillas que rodean barcos hundidos (seguro son agua)
+function aguaSegura(tablero) {
+    const claves = new Set();
+    tablero.barcos.filter(barco => barco.hundido)
+        .forEach(barco => tablero.alrededorDe(barco).forEach(([f, c]) => claves.add(`${f},${c}`)));
+    return claves;
+}
+
 function renderTableroJugador() {
     const mapa = fase === "batalla" && mostrarRadar ? ia.mapaProbabilidad() : null;
     const max = mapa ? Math.max(...mapa.flat()) : 0;
     const total = mapa ? mapa.flat().reduce((a, b) => a + b, 0) : 0;
+    const segura = aguaSegura(tableroJugador);
 
     ui.tableroJugador.classList.toggle("interactivo", fase === "ubicacion");
 
@@ -168,6 +177,7 @@ function renderTableroJugador() {
         const estado = tableroJugador.estadoCelda(f, c);
 
         el.classList.toggle("barco", !!tableroJugador.barcoEn(f, c));
+        el.classList.toggle("agua-segura", !estado && segura.has(`${f},${c}`));
         el.classList.toggle("agua", estado === "agua");
         el.classList.toggle("tocado", estado === "tocado");
         el.classList.toggle("hundido", estado === "hundido");
@@ -184,17 +194,20 @@ function renderTableroJugador() {
 
 function renderTableroEnemigo(revelar = false) {
     const puedeDisparar = fase === "batalla" && turnoJugador;
+    const segura = aguaSegura(tableroEnemigo);
     ui.tableroEnemigo.classList.toggle("interactivo", puedeDisparar);
 
     recorrerCeldas((f, c) => {
         const el = celda("enemigo", f, c);
         const estado = tableroEnemigo.estadoCelda(f, c);
+        const esSegura = !estado && segura.has(`${f},${c}`);
 
+        el.classList.toggle("agua-segura", esSegura);
         el.classList.toggle("agua", estado === "agua");
         el.classList.toggle("tocado", estado === "tocado");
         el.classList.toggle("hundido", estado === "hundido");
         el.classList.toggle("revelado", revelar && !estado && !!tableroEnemigo.barcoEn(f, c));
-        el.disabled = !puedeDisparar || estado !== null;
+        el.disabled = !puedeDisparar || estado !== null || esSegura;
     });
 }
 
@@ -226,7 +239,7 @@ function iniciarUbicacion() {
     ui.toggleRadarLabel.hidden = true;
     ui.mensajeFinal.style.display = "none";
 
-    setEstado("Ubicá tu flota: elegí un barco y hacé clic (o arrastralo) al tablero. R o clic derecho para rotar.");
+    setEstado("Ubicá tu flota: elegí un barco y hacé clic (o arrastralo) al tablero. R o clic derecho para rotar. Los barcos no se pueden tocar.");
 }
 
 function crearMuelle() {

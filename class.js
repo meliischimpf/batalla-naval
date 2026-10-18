@@ -51,13 +51,37 @@ class Tablero {
         ) || null;
     }
 
+    // Las 8 casillas que rodean a una (las que quedan fuera del tablero se descartan)
+    vecinas(fila, columna) {
+        const vecinas = [];
+        for (let df = -1; df <= 1; df++) {
+            for (let dc = -1; dc <= 1; dc++) {
+                if ((df || dc) && this.dentro(fila + df, columna + dc)) vecinas.push([fila + df, columna + dc]);
+            }
+        }
+        return vecinas;
+    }
+
+    // Los barcos no pueden superponerse ni tocarse, tampoco en diagonal.
     // `ignorar` permite mover un barco ya ubicado sin que choque consigo mismo
     puedeUbicar(longitud, fila, columna, direccion, ignorar = null) {
-        return Tablero.celdasDe(longitud, fila, columna, direccion).every(([f, c]) => {
-            if (!this.dentro(f, c)) return false;
+        const libre = ([f, c]) => {
             const ocupante = this.barcoEn(f, c);
             return !ocupante || ocupante === ignorar;
-        });
+        };
+        return Tablero.celdasDe(longitud, fila, columna, direccion).every(([f, c]) =>
+            this.dentro(f, c) && libre([f, c]) && this.vecinas(f, c).every(libre)
+        );
+    }
+
+    // Casillas alrededor de un barco hundido: seguro son agua
+    alrededorDe(barco) {
+        const claves = new Set(barco.celdas.map(([f, c]) => `${f},${c}`));
+        const alrededor = new Map();
+        barco.celdas.forEach(([f, c]) => this.vecinas(f, c).forEach(([x, y]) => {
+            if (!claves.has(`${x},${y}`)) alrededor.set(`${x},${y}`, [x, y]);
+        }));
+        return [...alrededor.values()];
     }
 
     ubicar(barco, fila, columna, direccion) {
@@ -94,7 +118,8 @@ class Tablero {
     }
 
     ubicarFlotaAleatoria(barcos) {
-        // del más grande al más chico, para que los grandes no se queden sin espacio
+        // del más grande al más chico, para que los grandes no se queden sin espacio;
+        // si igual alguno no entra (los barcos no pueden tocarse), se reintenta con toda la flota
         const ordenados = [...barcos].sort((a, b) => b.longitud - a.longitud);
         do {
             barcos.forEach(barco => this.quitar(barco));

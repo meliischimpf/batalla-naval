@@ -16,17 +16,38 @@ class IA {
         this.restantes = [...longitudes]; // longitudes de los barcos que todavía no hundió
         // "?" desconocido, "A" agua, "T" tocado (barco sin hundir), "H" hundido
         this.estado = Array.from({ length: filas }, () => Array(columnas).fill("?"));
+        this.disparos = new Set(); // "fila,columna" donde ya disparó
     }
 
     registrar(fila, columna, resultado, barco) {
+        this.disparos.add(`${fila},${columna}`);
         if (resultado === "Agua") {
             this.estado[fila][columna] = "A";
         } else if (resultado === "Tocado") {
             this.estado[fila][columna] = "T";
+            // los barcos son rectos y no se tocan, así que las diagonales de un impacto son agua
+            this.vecinas(fila, columna).forEach(([x, y]) => {
+                if (x !== fila && y !== columna && this.estado[x][y] === "?") this.estado[x][y] = "A";
+            });
         } else if (resultado === "Hundido") {
             barco.celdas.forEach(([f, c]) => this.estado[f][c] = "H");
             this.restantes.splice(this.restantes.indexOf(barco.longitud), 1);
+            // como los barcos no se tocan, todo lo que rodea a uno hundido es agua
+            barco.celdas.forEach(([f, c]) => this.vecinas(f, c).forEach(([x, y]) => {
+                if (this.estado[x][y] === "?") this.estado[x][y] = "A";
+            }));
         }
+    }
+
+    vecinas(fila, columna) {
+        const vecinas = [];
+        for (let df = -1; df <= 1; df++) {
+            for (let dc = -1; dc <= 1; dc++) {
+                const [x, y] = [fila + df, columna + dc];
+                if ((df || dc) && x >= 0 && y >= 0 && x < this.filas && y < this.columnas) vecinas.push([x, y]);
+            }
+        }
+        return vecinas;
     }
 
     celdasCon(marca) {
@@ -72,7 +93,16 @@ class IA {
 
     elegirDisparo() {
         const desconocidas = this.celdasCon("?");
-        if (this.dificultad === "facil") return azar(desconocidas);
+        if (this.dificultad === "facil") {
+            // no deduce nada: cualquier casilla donde todavía no disparó
+            const libres = [];
+            for (let f = 0; f < this.filas; f++) {
+                for (let c = 0; c < this.columnas; c++) {
+                    if (!this.disparos.has(`${f},${c}`)) libres.push([f, c]);
+                }
+            }
+            return azar(libres);
+        }
         if (this.dificultad === "medio") return this.cazarYRematar(desconocidas);
         return this.masProbable(this.mapaProbabilidad(), desconocidas);
     }

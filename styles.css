@@ -397,6 +397,13 @@ h1 {
     75% { transform: translateX(4px); }
 }
 
+/* alrededor de un barco hundido: no hay barcos porque no pueden tocarse */
+.celda.agua-segura {
+    background: linear-gradient(135deg, #d6ecff, #b3d7f5);
+    border-color: #8ec5f0;
+    border-style: dashed;
+}
+
 .celda.agua::before { content: "•"; }
 .celda.tocado::before { content: "✕"; }
 .celda.hundido::before { content: "✕"; }

@@ -11,8 +11,8 @@ Hecho con HTML, CSS y JavaScript puro, sin frameworks ni dependencias.
 - **Rival con IA en 3 dificultades** (ver [cómo funciona](#-cómo-funciona-la-ia)).
 - **📡 Radar de la IA**: un mapa de calor sobre tu tablero muestra la probabilidad que la IA le asigna a cada casilla y cuál es su próximo objetivo.
 - **Ubicación de la flota** con clic o drag & drop, rotación con `R` o clic derecho, vista previa válida/inválida y ubicación aleatoria.
-- Flota clásica: Portaaviones (5), Buque (4), Submarino (3), Crucero (3) y Lancha (2).
-- Al hundir un barco explota entero, y al terminar se revelan los barcos enemigos que no encontraste.
+- Flota clásica: Portaaviones (5), Buque (4), Submarino (3), Crucero (3) y Lancha (2). Los barcos no pueden tocarse, ni siquiera en diagonal.
+- Al hundir un barco explota entero y las casillas de alrededor se marcan como agua segura. Al terminar se revelan los barcos enemigos que no encontraste.
 - Estadísticas en vivo: tiempo, disparos, precisión y barcos restantes de cada lado.
 - Sonidos sintetizados con Web Audio API y animaciones para cada disparo.
 - Responsive, navegable con teclado, con anuncios para lectores de pantalla y respeto por `prefers-reduced-motion`.
@@ -32,11 +32,11 @@ Hecho con HTML, CSS y JavaScript puro, sin frameworks ni dependencias.
 
 ## 🤖 Cómo funciona la IA
 
-La IA no hace trampa: no ve tu tablero, solo conoce el resultado de sus propios disparos.
+La IA no hace trampa: no ve tu tablero, solo conoce el resultado de sus propios disparos. Medio y Difícil además deducen agua: como los barcos son rectos y no se tocan, las diagonales de un impacto y todo lo que rodea a un barco hundido no pueden tener barcos.
 
 | Dificultad | Estrategia |
 |---|---|
-| **Fácil** | Dispara al azar. |
+| **Fácil** | Dispara al azar a cualquier casilla donde todavía no disparó. |
 | **Medio** | *Caza y remata*: busca en patrón de tablero de ajedrez (el barco más chico ocupa al menos 2 casillas, así que no hace falta mirar todas) y, cuando toca un barco, prueba las casillas vecinas siguiendo la línea de los impactos. |
 | **Difícil** | *Densidad de probabilidad*: para cada barco que todavía no hundió, recorre todas las posiciones en las que podría estar sin contradecir lo que ya sabe, y suma cuántas pasan por cada casilla. Si hay impactos sin resolver, solo cuentan las posiciones que los atraviesan (con mucho más peso cuantos más atraviesen). Dispara a la casilla con mayor puntaje. Ese mapa es el que muestra el radar. |
 
@@ -44,9 +44,9 @@ Disparos que necesita cada dificultad para hundir una flota ubicada al azar (100
 
 | Dificultad | Promedio | Mejor | Peor |
 |---|---|---|---|
-| Fácil | 95,7 | 66 | 100 |
-| Medio | 51,0 | 23 | 74 |
-| Difícil | 44,7 | 22 | 71 |
+| Fácil | 95,2 | 64 | 100 |
+| Medio | 43,9 | 22 | 68 |
+| Difícil | 38,6 | 21 | 59 |
 
 ---
 
