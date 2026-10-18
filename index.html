@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Batalla Naval contra una IA que calcula la probabilidad de dónde está tu flota.">
     <link rel="stylesheet" href="styles.css">
     <title>🚢 Batalla Naval - Juego Épico</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚢</text></svg>">
@@ -10,48 +11,91 @@
 <body>
     <div class="game-container">
         <h1>⚓ BATALLA NAVAL ⚓</h1>
-        
+        <p class="subtitulo">Vos contra una IA que calcula dónde está escondida tu flota</p>
+
         <div class="control-panel">
+            <label class="selector-dificultad" id="selector-dificultad">
+                Dificultad
+                <select id="dificultad">
+                    <option value="facil">Fácil</option>
+                    <option value="medio">Medio</option>
+                    <option value="dificil" selected>Difícil</option>
+                </select>
+            </label>
             <button id="boton-iniciar" class="boton-iniciar">🚀 Iniciar Misión</button>
-            <button id="boton-parar" class="boton-parar" style="display: none;">🛑 Abortar</button>
-            <button id="boton-reiniciar" class="boton-reiniciar" style="display: none;">🔄 Nueva Misi��n</button>
+            <button id="boton-parar" class="boton-parar" hidden>🛑 Abortar</button>
+            <button id="boton-reiniciar" class="boton-reiniciar" hidden>🔄 Nueva Misión</button>
         </div>
 
-        <div id="temporizador"></div>
-        
-        <div class="game-stats" id="game-stats" style="display: none;">
+        <p id="estado" class="estado" aria-live="polite"></p>
+
+        <div id="panel-ubicacion" class="panel-ubicacion" hidden>
+            <div id="muelle" class="muelle"></div>
+            <div class="acciones-ubicacion">
+                <button id="boton-rotar" class="boton-secundario">↻ Rotar (R)</button>
+                <button id="boton-aleatorio" class="boton-secundario">🎲 Aleatorio</button>
+                <button id="boton-batalla" class="boton-iniciar" disabled>⚔️ ¡A la batalla!</button>
+            </div>
+        </div>
+
+        <div class="game-stats" id="game-stats" hidden>
+            <div class="stat-item">
+                <span>⏱️ Tiempo</span>
+                <span class="stat-value" id="tiempo-count">0:00</span>
+            </div>
             <div class="stat-item">
                 <span>🎯 Disparos</span>
                 <span class="stat-value" id="disparos-count">0</span>
             </div>
             <div class="stat-item">
-                <span>💥 Impactos</span>
-                <span class="stat-value" id="impactos-count">0</span>
+                <span>💥 Precisión</span>
+                <span class="stat-value" id="precision-count">0%</span>
             </div>
             <div class="stat-item">
-                <span>🚢 Barcos</span>
+                <span>🚢 Enemigos</span>
                 <span class="stat-value" id="barcos-count">5/5</span>
+            </div>
+            <div class="stat-item">
+                <span>🛡️ Tu flota</span>
+                <span class="stat-value" id="flota-count">5/5</span>
             </div>
         </div>
 
-        <div id="tablero"></div>
+        <div id="tableros" class="tableros" hidden>
+            <section class="panel-tablero" id="panel-jugador">
+                <div class="panel-header">
+                    <h2>🛡️ Tu flota</h2>
+                    <label class="toggle-radar" id="toggle-radar-label" hidden>
+                        <input type="checkbox" id="toggle-radar"> 📡 Radar de la IA
+                    </label>
+                </div>
+                <div id="tablero-jugador" class="tablero"></div>
+                <div class="leyenda-radar" id="leyenda-radar" hidden>
+                    <span>Menos probable</span>
+                    <span class="gradiente"></span>
+                    <span>Más probable</span>
+                </div>
+            </section>
+
+            <section class="panel-tablero" id="panel-enemigo" hidden>
+                <div class="panel-header">
+                    <h2>🎯 Flota enemiga</h2>
+                </div>
+                <div id="tablero-enemigo" class="tablero"></div>
+            </section>
+        </div>
     </div>
 
-    <div id="mensaje-final">
+    <div id="mensaje-final" role="dialog" aria-modal="true" aria-labelledby="mensaje-final-texto">
         <p id="mensaje-final-texto"></p>
-        <button onclick="reiniciarJuego()">🔄 Jugar de Nuevo</button>
+        <div class="acciones-final">
+            <button id="boton-jugar-de-nuevo">🔄 Jugar de Nuevo</button>
+            <button id="boton-ver-tableros" class="secundario">👀 Ver tableros</button>
+        </div>
     </div>
 
-    <!-- Efectos de sonido usando Web Audio API -->
-    <audio id="sound-hit" preload="auto">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvGUdBzoS2e/NaSkLKV/L7tl/PwIAfgAA" type="audio/wav">
-    </audio>
-    
-    <audio id="sound-miss" preload="auto">
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm1Ch3U" type="audio/wav">
-    </audio>
-
-    <script src="functions.js"></script>
     <script src="class.js"></script>
+    <script src="ia.js"></script>
+    <script src="functions.js"></script>
 </body>
 </html>

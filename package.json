@@ -1,7 +1,7 @@
 {
   "name": "batalla-naval",
   "version": "1.0.0",
-  "description": "Juego de Batalla Naval en JavaScript",
+  "description": "Batalla Naval contra una IA que calcula la probabilidad de dónde está tu flota",
   "main": "index.html",
   "scripts": {
     "dev": "npx http-server . -p 3000 -c-1 --cors",
@@ -11,14 +11,10 @@
   "keywords": [
     "battleship",
     "game",
-    "javascript"
+    "javascript",
+    "ai",
+    "probability"
   ],
   "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "esbuild": "^0.19.0"
-  },
-  "dependencies": {
-    "build": "^0.1.4"
-  }
+  "license": "MIT"
 }
